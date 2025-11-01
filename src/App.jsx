@@ -7,9 +7,11 @@ import ProjectDetail from './pages/ProjectDetail.jsx'
 import Reports from './pages/Reports.jsx'
 import Settings from './pages/Settings.jsx'
 import NotFound from './pages/NotFound.jsx'
+import Resources from './pages/Resources.jsx'
 import { fetchHolidays } from './lib/holidays.js'
 import Loader from './shared/Loader.jsx'
 import Alert from './shared/Alert.jsx'
+import { ensureSeedData } from './features/projects/projectStore.js'
 
 export default function App() {
   const [holidays, setHolidays] = useState([])
@@ -21,24 +23,25 @@ export default function App() {
   const [year, setYear] = useState(envYear)
 
   const reload = useCallback(async (ctl) => {
-  setError('')
-  setLoading(true)
-  try {
-    const data = await fetchHolidays({ country, year, signal: ctl.signal })
-    setHolidays(data)
-  } catch (e) {
-    // ⬇️ Ignore expected aborts triggered by effect cleanup / StrictMode
-    if (e?.name === 'AbortError' || /aborted/i.test(e?.message || '')) {
-      return
+    setError('')
+    setLoading(true)
+    try {
+      const data = await fetchHolidays({ country, year, signal: ctl.signal })
+      setHolidays(data)
+    } catch (e) {
+      // ⬇️ Ignore expected aborts triggered by effect cleanup / StrictMode
+      if (e?.name === 'AbortError' || /aborted/i.test(e?.message || '')) {
+        return
+      }
+      setError(e.message || 'Failed to load holidays')
+    } finally {
+      setLoading(false)
     }
-    setError(e.message || 'Failed to load holidays')
-  } finally {
-    setLoading(false)
-  }
-}, [country, year])
+  }, [country, year])
 
 
   useEffect(() => {
+    ensureSeedData()
     const ctl = new AbortController()
     reload(ctl)
     return () => ctl.abort()
@@ -57,6 +60,7 @@ export default function App() {
           <Route index element={<Dashboard />} />
           <Route path="projects" element={<Projects />} />
           <Route path="projects/:id" element={<ProjectDetail />} />
+          <Route path="resources" element={<Resources />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
