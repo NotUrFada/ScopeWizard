@@ -1,21 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Button from '../../shared/Button.jsx'
 import Modal from '../../shared/Modal.jsx'
 import ProjectForm from './ProjectForm.jsx'
 import ProjectList from './ProjectList.jsx'
-import { loadAll, createProject } from './projectStore.js'
+import { createProject } from './projectStore.js'
+import { usePortfolioData } from './usePortfolioData.js'
 
 export default function ProjectsPage() {
-  const [state, setState] = useState(loadAll())
+  const portfolio = usePortfolioData()
   const [open, setOpen] = useState(false)
-
-  useEffect(() => {
-    setState(loadAll())
-  }, [])
 
   function handleCreate(values) {
     createProject(values)
-    setState(loadAll())
     setOpen(false)
   }
 
@@ -25,7 +21,7 @@ export default function ProjectsPage() {
         <h2>Projects</h2>
         <Button kind="primary" onClick={() => setOpen(true)}>New Project</Button>
       </div>
-      <ProjectList projects={state.projects} />
+      <ProjectList projects={portfolio.projects} />
       <Modal open={open} title="Create Project" onClose={()=>setOpen(false)}>
         <ProjectForm onSubmit={handleCreate} />
       </Modal>

@@ -11,6 +11,7 @@ export default function NavBar() {
       <div className="navlinks">
         <NavLink to="/" end className={({isActive})=>`navlink ${isActive?'active':''}`}>Dashboard</NavLink>
         <NavLink to="/projects" className={({isActive})=>`navlink ${isActive?'active':''}`}>Projects</NavLink>
+        <NavLink to="/resources" className={({isActive})=>`navlink ${isActive?'active':''}`}>Resources</NavLink>
         <NavLink to="/reports" className={({isActive})=>`navlink ${isActive?'active':''}`}>Reports</NavLink>
         <NavLink to="/settings" className={({isActive})=>`navlink ${isActive?'active':''}`}>Settings</NavLink>
       </div>
